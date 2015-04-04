@@ -15,16 +15,16 @@ import java.util.Map;
  */
 public class Categories {
 
-    private Map<String, Integer> unitedWordFrequencyForLegitEmails;
-    private Map<String, Integer> unitedWordFrequencyForSpamEmails;
+    private Map<String, Integer> totalWordFrequencyForLegitEmails;
+    private Map<String, Integer> totalWordFrequencyForSpamEmails;
     private List<Email> emails;
     private int totalWordsForLegitEmail = 0;
     private int totalWordsForSpamMail = 0;
     private List<Email> legitOrSpamMails;
 
     {
-        unitedWordFrequencyForLegitEmails = new HashMap<>();
-        unitedWordFrequencyForSpamEmails = new HashMap<>();
+        totalWordFrequencyForLegitEmails = new HashMap<>();
+        totalWordFrequencyForSpamEmails = new HashMap<>();
     }
 
     public Categories(List<Email> emails) {
@@ -37,35 +37,35 @@ public class Categories {
             if (email.getCategory() == 0) {
                 for (Map.Entry<String, Integer> map : email.getData().entrySet()) {
                     totalWordsForLegitEmail += map.getValue();
-                    Integer value = unitedWordFrequencyForLegitEmails.get(map.getKey());
+                    Integer value = totalWordFrequencyForLegitEmails.get(map.getKey());
                     if (value == null) {
-                        unitedWordFrequencyForLegitEmails.put(map.getKey(), map.getValue());
+                        totalWordFrequencyForLegitEmails.put(map.getKey(), map.getValue());
                     } else {
                         Integer newValue = value + map.getValue();
-                        unitedWordFrequencyForLegitEmails.put(map.getKey(), newValue);
+                        totalWordFrequencyForLegitEmails.put(map.getKey(), newValue);
                     }
                 }
             } else {
                 for (Map.Entry<String, Integer> map : email.getData().entrySet()) {
                     totalWordsForSpamMail += map.getValue();
-                    Integer value = unitedWordFrequencyForSpamEmails.get(map.getKey());
+                    Integer value = totalWordFrequencyForSpamEmails.get(map.getKey());
                     if (value == null) {
-                        unitedWordFrequencyForSpamEmails.put(map.getKey(), map.getValue());
+                        totalWordFrequencyForSpamEmails.put(map.getKey(), map.getValue());
                     } else {
                         Integer newValue = value + map.getValue();
-                        unitedWordFrequencyForSpamEmails.put(map.getKey(), newValue);
+                        totalWordFrequencyForSpamEmails.put(map.getKey(), newValue);
                     }
                 }
             }
         }
     }
 
-    public Map<String, Integer> getUnitedWordFrequencyForLegitEmails() {
-        return unitedWordFrequencyForLegitEmails;
+    public Map<String, Integer> getTotalWordFrequencyForLegitEmails() {
+        return totalWordFrequencyForLegitEmails;
     }
 
-    public Map<String, Integer> getUnitedWordFrequencyForSpamEmails() {
-        return unitedWordFrequencyForSpamEmails;
+    public Map<String, Integer> getTotalWordFrequencyForSpamEmails() {
+        return totalWordFrequencyForSpamEmails;
     }
 
     public int getTotalWordsForLegitEmail() {
@@ -80,7 +80,7 @@ public class Categories {
         this.legitOrSpamMails = legitOrSpamMails;
     }
 
-    public double getCategoryProbability() {
+    public double getPriorCategoryProbability() {
         double prob = (double) legitOrSpamMails.size() / emails.size();
         return Math.log(prob) / Math.log(2);
     }

@@ -42,12 +42,14 @@ public class Main {
         System.out.println("Vocabulary size: " + trainParser.getDictionary().size());
         System.out.println("Total legit mails: " + trainParser.getLegitEmails().size());
         System.out.println("Total spam mails: " + trainParser.getSpamEmails().size());
-        System.out.println("Total mails: " + trainParser.getTotalEmails());
+        System.out.println("Total mails: " + trainParser.getTotalNumberOfEmails());
         System.out.println("Legit mail probability: " + legitMailProbability);
         System.out.println("Spam mail probability: " + spamMailProbability);
         System.out.println("Total (unique) words in legit mails from map: " + categories.getTotalWordFrequencyForLegitEmails().size());
         System.out.println("Total (unique) words in spam mails from map: " + categories.getTotalWordFrequencyForSpamEmails().size());
         System.out.println("Total words in legit mails from int value: " + categories.getTotalWordsForLegitEmail());
         System.out.println("Total words in spam mails ftom int value: " + categories.getTotalWordsForSpamMail());
+        MultinomialClassification classification = new MultinomialClassification(trainParser, testParser, categories);
+        classification.calculateProbability();
     }
 }

@@ -5,7 +5,7 @@
  */
 package Main;
 
-import Utils.Email;
+import Utils.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -26,12 +26,14 @@ public class MailParser {
     private List<Email> spamEmails;
     private Map<String, Integer> dictionary;
     private List<Email> allMails;
-
+    private List<String> dataAsList;
     {
         allMails = new ArrayList<>();
         dictionary = new HashMap<>();
         legitEmails = new ArrayList<>();
         spamEmails = new ArrayList<>();
+        dataAsList = new ArrayList<>();
+        wordFrequency = new HashMap<>();
     }
 
     public MailParser(List<File> fileList) {
@@ -40,13 +42,15 @@ public class MailParser {
 
     public void parseAndCategorize() throws IOException {
         for (File file : fileList) {
-            wordFrequency = new HashMap<>();
+            dataAsList.clear();
+            wordFrequency.clear();
             if (file.getName().endsWith(".txt")) {
                 String fileName = file.getName().replaceAll("[0-9]+", "");
                 String data = new String(Files.readAllBytes(file.toPath()));
                 String dataOfNumbers = data.replaceAll("[a-zA-Z]+.", "");
                 String[] dataFormated = dataOfNumbers.split("\\s+");
                 for (String token : dataFormated) {
+                    dataAsList.add(token);
                     Integer value = wordFrequency.get(token);
                     if (value == null) {
                         value = 0;
@@ -68,15 +72,12 @@ public class MailParser {
     }
 
     private void setCategory(String fileName) {
-        int category;
         if (fileName.equalsIgnoreCase("legit.txt")) {
-            category = 0;
-            Email mail = new Email(wordFrequency, category, fileName);
+            Email mail = new Email(dataAsList, wordFrequency, Utils.LEGIT, fileName);
             legitEmails.add(mail);
             allMails.add(mail);
         } else {
-            category = 1;
-            Email mail = new Email(wordFrequency, category, fileName);
+            Email mail = new Email(dataAsList, wordFrequency, Utils.SPAM, fileName);
             spamEmails.add(mail);
             allMails.add(mail);
         }
@@ -114,7 +115,14 @@ public class MailParser {
         return dictionary;
     }
 
-    public int getTotalEmails() {
+    public List<Email> getTotalCategorizedEmails(){
+        List<Email> total = new ArrayList<>();
+        total.addAll(legitEmails);
+        total.addAll(spamEmails);
+        return total;
+    }
+    
+    public int getTotalNumberOfEmails() {
         return legitEmails.size() + spamEmails.size();
     }
 }

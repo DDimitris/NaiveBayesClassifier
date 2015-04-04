@@ -34,7 +34,7 @@ public class Categories {
 
     public void setTotalWordCountForEveryCategory() {
         for (Email email : emails) {
-            if (email.getCategory() == 0) {
+            if (email.getCategory() == Utils.LEGIT) {
                 for (Map.Entry<String, Integer> map : email.getData().entrySet()) {
                     totalWordsForLegitEmail += map.getValue();
                     Integer value = totalWordFrequencyForLegitEmails.get(map.getKey());
@@ -58,6 +58,14 @@ public class Categories {
                 }
             }
         }
+    }
+
+    public Integer getWordFrequencyInLegitEmails(String word) {
+        return totalWordFrequencyForLegitEmails.get(word);
+    }
+
+    public Integer getWordFrequencyInSpamEmails(String word) {
+        return totalWordFrequencyForSpamEmails.get(word);
     }
 
     public Map<String, Integer> getTotalWordFrequencyForLegitEmails() {

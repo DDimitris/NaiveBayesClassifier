@@ -25,15 +25,14 @@ public class MailParser {
     private List<Email> legitEmails;
     private List<Email> spamEmails;
     private Map<String, Integer> dictionary;
-    private List<Email> allMails;
     private List<String> dataAsList;
+
     {
-        allMails = new ArrayList<>();
         dictionary = new HashMap<>();
         legitEmails = new ArrayList<>();
         spamEmails = new ArrayList<>();
-        dataAsList = new ArrayList<>();
-        wordFrequency = new HashMap<>();
+
+
     }
 
     public MailParser(List<File> fileList) {
@@ -42,14 +41,19 @@ public class MailParser {
 
     public void parseAndCategorize() throws IOException {
         for (File file : fileList) {
-            dataAsList.clear();
-            wordFrequency.clear();
+            dataAsList = new ArrayList<>();
+            wordFrequency = new HashMap<>();
             if (file.getName().endsWith(".txt")) {
                 String fileName = file.getName().replaceAll("[0-9]+", "");
                 String data = new String(Files.readAllBytes(file.toPath()));
                 String dataOfNumbers = data.replaceAll("[a-zA-Z]+.", "");
                 String[] dataFormated = dataOfNumbers.split("\\s+");
                 for (String token : dataFormated) {
+                    try {
+                        Integer.parseInt(token);
+                    } catch (Exception e) {
+                        continue;
+                    }
                     dataAsList.add(token);
                     Integer value = wordFrequency.get(token);
                     if (value == null) {
@@ -75,20 +79,10 @@ public class MailParser {
         if (fileName.equalsIgnoreCase("legit.txt")) {
             Email mail = new Email(dataAsList, wordFrequency, Utils.LEGIT, fileName);
             legitEmails.add(mail);
-            allMails.add(mail);
         } else {
             Email mail = new Email(dataAsList, wordFrequency, Utils.SPAM, fileName);
             spamEmails.add(mail);
-            allMails.add(mail);
         }
-    }
-
-    public List<Email> getAllMails() {
-        return allMails;
-    }
-
-    public void resetMails() {
-        allMails.clear();
     }
 
     public List<Email> getLegitEmails() {
@@ -97,6 +91,10 @@ public class MailParser {
 
     public List<Email> getSpamEmails() {
         return spamEmails;
+    }
+
+    public void printTotalNumberOfFilesRead() {
+        System.out.println("Total number of files read: " + getTotalNumberOfEmails());
     }
 
     public void printLegitMailList() {
@@ -115,13 +113,13 @@ public class MailParser {
         return dictionary;
     }
 
-    public List<Email> getTotalCategorizedEmails(){
+    public List<Email> getTotalCategorizedEmails() {
         List<Email> total = new ArrayList<>();
         total.addAll(legitEmails);
         total.addAll(spamEmails);
         return total;
     }
-    
+
     public int getTotalNumberOfEmails() {
         return legitEmails.size() + spamEmails.size();
     }

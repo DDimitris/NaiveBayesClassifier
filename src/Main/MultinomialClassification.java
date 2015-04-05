@@ -35,14 +35,13 @@ public class MultinomialClassification {
      */
     public void calculateProbability() {
         classifiedEmails.clear();
-        for (Email e : testParser.getTotalCategorizedEmails()) {
+        for (Email e : testParser.getTotalCategorizedEmails()) {//Iterate all over the documents in the test set.
             double probabilityOfLegitMail = 0.0;
             double probabilityOfSpamMail = 0.0;
             Map<String, Integer> data = e.getData();
             for (Map.Entry<String, Integer> map : data.entrySet()) {
-                double[] calculateConditionalProbability = calculateConditionalProbability(map.getKey());
-                probabilityOfLegitMail += probabilityToLogarithm(calculateConditionalProbability[0]) * map.getValue();
-                probabilityOfSpamMail += probabilityToLogarithm(calculateConditionalProbability[1]) * map.getValue();
+                probabilityOfLegitMail = (double) probabilityOfLegitMail + probabilityToLogarithm(calculateConditionalProbability(map.getKey(), Utils.LEGIT)) * map.getValue();
+                probabilityOfSpamMail = (double) probabilityOfSpamMail + probabilityToLogarithm(calculateConditionalProbability(map.getKey(), Utils.SPAM)) * map.getValue();
             }
             categories.setLegitOrSpamMails(trainParser.getLegitEmails());
             probabilityOfLegitMail += categories.getPriorCategoryProbability();
@@ -56,28 +55,42 @@ public class MultinomialClassification {
                 e.setClassifiedCategory(Utils.SPAM);
             }
         }
-
     }
 
     /**
-     * Laplace smoothing is used to avoid zero results.
+     * This method calculates the probability of a term (t) being in a certain
+     * category (c) P(term | category). Laplace smoothing is used to avoid zero
+     * results.
      *
      * @param word
      * @return
      */
-    private double[] calculateConditionalProbability(String word) {
-        double[] probabilityForBothCategories = new double[2];
-        probabilityForBothCategories[0] =
-                (double) (categories.getWordFrequencyInLegitEmails(word) + 1)
-                / (categories.getTotalWordsForLegitEmail() + trainParser.getDictionary().size());
-        probabilityForBothCategories[1] =
-                (double) (categories.getWordFrequencyInSpamEmails(word) + 1)
-                / (categories.getTotalWordsForSpamMail() + trainParser.getDictionary().size());
+    private double calculateConditionalProbability(String word, int category) {
+        double probabilityForBothCategories = 0.0;
+        if (category == Utils.LEGIT) {
+            probabilityForBothCategories =
+                    (double) (categories.getWordFrequencyInLegitEmails(word) + 1)
+                    / (categories.getTotalWordsForLegitEmail() + trainParser.getDictionary().size());
+        } else {
+            probabilityForBothCategories =
+                    (double) (categories.getWordFrequencyInSpamEmails(word) + 1)
+                    / (categories.getTotalWordsForSpamMail() + trainParser.getDictionary().size());
+        }
         return probabilityForBothCategories;
-
     }
 
     private double probabilityToLogarithm(double prob) {
         return Math.log(prob) / Math.log(2);
+    }
+
+    public List<Email> getClassifiedEmails() {
+        return classifiedEmails;
+    }
+
+    public void printDefaultCategoryAndAssign() {
+        for (Email e : classifiedEmails) {
+            System.out.println("Initial category: " + e.getCategory());
+            System.out.println("Automative category: " + e.getClassifiedCategory());
+        }
     }
 }

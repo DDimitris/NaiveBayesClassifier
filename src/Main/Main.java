@@ -8,6 +8,7 @@ package Main;
 import java.io.File;
 import java.util.List;
 import Utils.*;
+import java.util.ArrayList;
 
 /**
  *
@@ -15,9 +16,13 @@ import Utils.*;
  */
 public class Main {
 
+    private static List<File> listOfTrainingFiles = new ArrayList<>();
+    private static List<File> listOfTestingFiles = new ArrayList<>();
+
     public static void main(String[] args) throws Exception {
-        List<File> listOfTrainingFiles = Utils.getListOfFiles(Utils.TRAINING_EMAIL_DIR);
-        List<File> listOfTestingFiles = Utils.getListOfFiles(Utils.TESTING_EMAIL_DIR);
+        listOfTrainingFiles.addAll(Utils.getListOfFiles(Utils.TRAINING_EMAIL_DIR));
+        Utils.clearFileList();
+        listOfTestingFiles.addAll(Utils.getListOfFiles(Utils.TESTING_EMAIL_DIR));
         MailParser trainParser = new MailParser(listOfTrainingFiles);
         MailParser testParser = new MailParser(listOfTestingFiles);
         trainParser.parseAndCategorize();
@@ -33,12 +38,14 @@ public class Main {
          * Note that the result is returned as a logarithm with base 2.
          * A simple example is demonstrated below.
          */
-        Categories categories = new Categories(trainParser.getAllMails());
+        Categories categories = new Categories(trainParser.getTotalCategorizedEmails());
         categories.setTotalWordCountForEveryCategory();
         categories.setLegitOrSpamMails(trainParser.getLegitEmails());
         double legitMailProbability = categories.getPriorCategoryProbability();
         categories.setLegitOrSpamMails(trainParser.getSpamEmails());
         double spamMailProbability = categories.getPriorCategoryProbability();
+        trainParser.printTotalNumberOfFilesRead();
+        testParser.printTotalNumberOfFilesRead();
         System.out.println("Vocabulary size: " + trainParser.getDictionary().size());
         System.out.println("Total legit mails: " + trainParser.getLegitEmails().size());
         System.out.println("Total spam mails: " + trainParser.getSpamEmails().size());
@@ -48,8 +55,11 @@ public class Main {
         System.out.println("Total (unique) words in legit mails from map: " + categories.getTotalWordFrequencyForLegitEmails().size());
         System.out.println("Total (unique) words in spam mails from map: " + categories.getTotalWordFrequencyForSpamEmails().size());
         System.out.println("Total words in legit mails from int value: " + categories.getTotalWordsForLegitEmail());
-        System.out.println("Total words in spam mails ftom int value: " + categories.getTotalWordsForSpamMail());
+        System.out.println("Total words in spam mails from int value: " + categories.getTotalWordsForSpamMail());
         MultinomialClassification classification = new MultinomialClassification(trainParser, testParser, categories);
         classification.calculateProbability();
+        Analysis analysis = new Analysis(classification.getClassifiedEmails());
+        analysis.calculatePrecisionRecall();
+
     }
 }

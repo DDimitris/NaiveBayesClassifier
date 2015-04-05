@@ -29,7 +29,6 @@ public class Categories {
 
     public Categories(List<Email> emails) {
         this.emails = emails;
-
     }
 
     public void setTotalWordCountForEveryCategory() {
@@ -61,11 +60,19 @@ public class Categories {
     }
 
     public Integer getWordFrequencyInLegitEmails(String word) {
-        return totalWordFrequencyForLegitEmails.get(word);
+        Integer value = totalWordFrequencyForLegitEmails.get(word);
+        if (value == null) {
+            value = 0;
+        }
+        return value;
     }
 
     public Integer getWordFrequencyInSpamEmails(String word) {
-        return totalWordFrequencyForSpamEmails.get(word);
+        Integer value = totalWordFrequencyForSpamEmails.get(word);
+        if (value == null) {
+            value = 0;
+        }
+        return value;
     }
 
     public Map<String, Integer> getTotalWordFrequencyForLegitEmails() {

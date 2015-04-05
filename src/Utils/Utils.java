@@ -15,13 +15,15 @@ import java.util.List;
  */
 public class Utils {
 
-    private static final String USER_DIR = System.getProperty("user.dir");
-    private static final String FILE_SEPERATOR = System.getProperty("file.separator");
     public static final String TRAINING_EMAIL_DIR = "C:\\Users\\Dimitris\\Dropbox\\2ο Εξάμηνο MSc\\Natural Language Processing\\2ο Σέτ Ασκήσεων\\training";
     public static final String TESTING_EMAIL_DIR = "C:\\Users\\Dimitris\\Dropbox\\2ο Εξάμηνο MSc\\Natural Language Processing\\2ο Σέτ Ασκήσεων\\testing";
     public static final int LEGIT = 0;
     public static final int SPAM = 1;
     private static List<File> listOfFiles = new ArrayList<>();
+
+    public static void clearFileList() {
+        listOfFiles.clear();
+    }
 
     public static List<File> getListOfFiles(String path) {
         File directory = new File(path);

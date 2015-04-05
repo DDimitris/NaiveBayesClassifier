@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package Utils;
 
 import java.util.List;
@@ -14,11 +13,13 @@ import java.util.Map;
  * @author Dimitris Dedousis <dimitris.dedousis@gmail.com>
  */
 public class Email {
+
     private Map<String, Integer> data;
     private int category;
     private String fileName;
     private int classifiedCategory;
     private List<String> dataAsList;
+
     public Email(List<String> dataAsList, Map<String, Integer> data, int category, String fileName) {
         this.dataAsList = dataAsList;
         this.data = data;
@@ -45,5 +46,24 @@ public class Email {
     public void setClassifiedCategory(int classifiedCategory) {
         this.classifiedCategory = classifiedCategory;
     }
-    
+
+    public List<String> getDataAsList() {
+        return dataAsList;
+    }
+
+    public void setDataAsList(List<String> dataAsList) {
+        this.dataAsList = dataAsList;
+    }
+
+    public boolean isCorrectClassification() {
+        return category == classifiedCategory ? true : false;
+    }
+
+    public int getTotalNumberOfWords() {
+        int count = 0;
+        for (String word : data.keySet()) {
+            count = count + data.get(word);
+        }
+        return count;
+    }
 }

@@ -53,9 +53,24 @@ public class Analysis {
         return pairList;
     }
 
+    public double calculateAccuracy() {
+        int correct = 0;
+        for (Email email : testMails) {
+            if (email.getCategory() == email.getClassifiedCategory()) {
+                correct++;
+            }
+        }
+        return (double) correct / testMails.size();
+    }
+
+    public double calculateError() {
+        return 1 - calculateAccuracy();
+    }
+
     public void printPrecisionRecall() {
         for (PrecisionRecallPair pair : getPercisionRecallList()) {
             System.out.println("Precision " + pair.getPrecision() + "\t" + " recall " + pair.getRecall());
         }
+        System.out.println("Total calculations: " + getPercisionRecallList().size());
     }
 }

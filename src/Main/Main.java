@@ -60,6 +60,8 @@ public class Main {
         classification.calculateProbability();
         Analysis analysis = new Analysis(classification.getClassifiedEmails());
         analysis.calculatePrecisionRecall();
-
+//        analysis.printPrecisionRecall();
+        System.out.println("Accuracy: " + analysis.calculateAccuracy());
+        System.out.println("Error: " + analysis.calculateError());
     }
 }

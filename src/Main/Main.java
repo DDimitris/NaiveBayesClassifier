@@ -8,6 +8,8 @@ package Main;
 import java.io.File;
 import java.util.List;
 import Utils.*;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -50,8 +52,8 @@ public class Main {
         System.out.println("Total legit mails: " + trainParser.getLegitEmails().size());
         System.out.println("Total spam mails: " + trainParser.getSpamEmails().size());
         System.out.println("Total mails: " + trainParser.getTotalNumberOfEmails());
-        System.out.println("Legit mail probability: " + legitMailProbability);
-        System.out.println("Spam mail probability: " + spamMailProbability);
+        System.out.println("Legit mail prior-probability: " + legitMailProbability);
+        System.out.println("Spam mail prior-probability: " + spamMailProbability);
         System.out.println("Total (unique) words in legit mails from map: " + categories.getTotalWordFrequencyForLegitEmails().size());
         System.out.println("Total (unique) words in spam mails from map: " + categories.getTotalWordFrequencyForSpamEmails().size());
         System.out.println("Total words in legit mails from int value: " + categories.getTotalWordsForLegitEmail());
@@ -60,8 +62,20 @@ public class Main {
         classification.calculateProbability();
         Analysis analysis = new Analysis(classification.getClassifiedEmails());
         analysis.calculatePrecisionRecall();
-//        analysis.printPrecisionRecall();
-        System.out.println("Accuracy: " + analysis.calculateAccuracy());
-        System.out.println("Error: " + analysis.calculateError());
+        analysis.printPrecisionRecall();
+        double calculateAccuracy = analysis.calculateAccuracy() * 100;
+        double calculateError = analysis.calculateError() * 100;
+        System.out.println("Accuracy: " + calculateAccuracy + "%");
+        System.out.println("Error: " + calculateError + "%");
+//        writeToFile(analysis);
+    }
+
+    private static void writeToFile(Analysis analysis) throws IOException {
+        FileWriter writer = new FileWriter("C:\\Users\\Dimitris\\Desktop\\results.csv");
+        for (PrecisionRecallPair pair : analysis.getPercisionRecallList()) {
+            writer.append(pair.getRecall() + "," + pair.getPrecision() + "\n");
+        }
+        writer.flush();
+        writer.close();
     }
 }

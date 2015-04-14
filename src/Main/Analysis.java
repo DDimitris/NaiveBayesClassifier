@@ -35,9 +35,9 @@ public class Analysis {
             if (e.isCorrectClassification() && e.getCategory() == Utils.LEGIT) {
                 truePositive++;
             } else if (e.getCategory() != e.getClassifiedCategory() && e.getCategory() == Utils.SPAM) {
-                falseNegative++;
-            } else if (e.getCategory() != e.getClassifiedCategory() && e.getCategory() == Utils.LEGIT) {
                 falsePositive++;
+            } else if (e.getCategory() != e.getClassifiedCategory() && e.getCategory() == Utils.LEGIT) {
+                falseNegative++;
             } else {
                 trueNegative++;
             }
